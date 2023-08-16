@@ -5,38 +5,63 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.erudio.restwithspringboot.converters.numberConverter;
 import br.com.erudio.restwithspringboot.exceptions.UnsupportedMathOperation;
+import br.com.erudio.restwithspringboot.math.SimpleMath;
 
 @RestController
 public class MathController {
+
+  private SimpleMath math = new SimpleMath();
 
   @RequestMapping(value = "/sum/{numberOne}/{numberTwo}", method = RequestMethod.GET)
   public Double sum(@PathVariable("numberOne") String numberOne,
       @PathVariable("numberTwo") String numberTwo) throws Exception {
 
-    if (!isNumeric(numberOne) || !isNumeric(numberTwo)) {
+    if (!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
       throw new UnsupportedMathOperation("Please set a numeric value!");
     }
-    return convertToDouble(numberOne) + convertToDouble(numberTwo);
+    return math.sum(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
   }
 
-  private Double convertToDouble(String strNumber) {
-    if (strNumber == null)
-      return 0D;
+  @RequestMapping(value = "/sub/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+  public Double sub(@PathVariable("numberOne") String numberOne,
+      @PathVariable("numberTwo") String numberTwo) throws Exception {
 
-    String number = strNumber.replaceAll(",", ".");
-
-    if (isNumeric(number))
-      return Double.parseDouble(number);
-    return 0D;
+    if (!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
+      throw new UnsupportedMathOperation("Please set a numeric value!");
+    }
+    return math.sub(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
   }
 
-  private boolean isNumeric(String strNumber) {
-    if (strNumber == null)
-      return false;
+  @RequestMapping(value = "/mult/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+  public Double mult(@PathVariable("numberOne") String numberOne,
+      @PathVariable("numberTwo") String numberTwo) throws Exception {
 
-    String number = strNumber.replaceAll(",", ".");
+    if (!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
+      throw new UnsupportedMathOperation("Please set a numeric value!");
+    }
+    return math.mult(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
+  }
 
-    return number.matches("[-+]?[0-9]*\\.?[0-9]+");
+  @RequestMapping(value = "/raiz/{numberOne}", method = RequestMethod.GET)
+  public Double raiz(@PathVariable("numberOne") String numberOne) throws Exception {
+
+    if (!numberConverter.isNumeric(numberOne)) {
+      throw new UnsupportedMathOperation("Please set a numeric value!");
+    }
+
+    return math.raiz(numberConverter.convertToDouble(numberOne));
+  }
+
+  @RequestMapping(value = "/media/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+  public Double media(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo)
+      throws Exception {
+
+    if (!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
+      throw new UnsupportedMathOperation("Please set a numeric value!");
+    }
+
+    return math.media(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
   }
 }
